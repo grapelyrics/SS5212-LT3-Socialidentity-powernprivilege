@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SS5212 LT3 × Lecture 10 Quiz</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: Arial, sans-serif;
+      line-height: 1.55;
+      color: #243047;
+      background: #f3f6fb;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #274276;
+      font-size: 1.8rem;
+      line-height: 1.25;
+    }
+
+    .intro,
+    .question,
+    .result {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px;
+      margin: 16px 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #e9efff;
+      color: #31529b;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .question h2 {
+      margin: 12px 0;
+      font-size: 1.05rem;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      padding: 10px;
+      margin: 7px 0;
+      border-radius: 8px;
+      background: #f7f9fc;
+      cursor: pointer;
+    }
+
+    label:hover {
+      background: #edf2ff;
+    }
+
+    input[type="radio"] {
+      margin-right: 8px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 13px 18px;
+      margin: 8px 8px 8px 0;
+      background: #3158ad;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #24458e;
+    }
+
+    .reset-button {
+      background: #69758a;
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #edf3ff;
+    }
+
+    .correct {
+      color: #14743a;
+      font-weight: bold;
+    }
+
+    .incorrect {
+      color: #b42929;
+      font-weight: bold;
+    }
+
+    .result {
+      display: none;
+      border-left: 5px solid #3158ad;
+    }
+
+    .small {
+      color: #526078;
+      font-size: 0.9rem;
+    }
+
+    #progress {
+      font-weight: bold;
+      color: #31529b;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <h1>SS5212 LT3 × Lecture 10 Practice Quiz</h1>
+
+  <div class="intro">
+    <p><strong>50 original multiple-choice questions</strong></p>
+
+    <p>
+      Choose one answer for each question. Press
+      <strong>Submit answers</strong> to see your score,
+      correct answers and Chinese explanations.
+    </p>
+
+    <p>
+      ⭐ <strong>Core:</strong> topics overlapping with or directly related
+      to Lecture 10.<br>
+      📘 <strong>Supplementary:</strong> additional LT3 applications.
+    </p>
+
+    <p class="small">
+      No ACE or stress response questions are included.
+      These questions are original practice, not verified CityU past-paper questions.
+    </p>
+
+    <p class="small">
+      Your selections are saved when browser storage is available.
+      Progress is stored only in this browser on this device.
+      Clearing browser data or using private browsing may remove it.
+    </p>
+
+    <p id="progress" aria-live="polite"></p>
+  </div>
+
+  <div id="result" class="result" aria-live="polite"></div>
+
+  <form id="quiz"></form>
+
+  <button type="button" id="submitButton">
+    Submit answers
+  </button>
+
+  <button type="button" id="resetButton" class="reset-button">
+    Reset quiz
+  </button>
+
+</div>
+
+<script>
+/*
+  Each question contains:
+  tag: topic label
+  q: question
+  options: four choices
+  answer: correct option number, beginning at 0
+  explanation: Chinese explanation
+*/
+
+const questions = [
+
+  {
+    tag: "⭐ Core — Micro–Mezzo–Macro",
+    q: "A school social worker meets a student whose grades have fallen. Instead of focusing only on motivation, the worker also explores family relationships, school practices and community resources. Which approach is most consistent with this assessment?",
+    options: [
+      "Explaining the problem solely through personality traits",
+      "Examining the person in relation to multiple environmental levels",
+      "Assuming school policy is the only relevant factor",
+      "Treating behaviour as unrelated to context"
+    ],
+    answer: 1,
+    explanation: "不只看個人動機，也看家庭、學校及資源，是把個人放進多層環境中理解。"
+  },
+
+  {
+    tag: "⭐ Core — Micro",
+    q: "A social worker assesses a client's concentration, physical health and beliefs about their own abilities. In the Lecture 3 micro–mezzo–macro framework, these factors are primarily located at which level?",
+    options: [
+      "Micro",
+      "Mezzo",
+      "Macro",
+      "Chronosystem only"
+    ],
+    answer: 0,
+    explanation: "在課堂的 micro–mezzo–macro 分類中，生理、心理及認知特徵屬 micro。"
+  },
+
+  {
+    tag: "⭐ Core — Mezzo",
+    q: "A student's relationship with classmates has deteriorated, and the student no longer feels supported by friends. In the lecture's micro–mezzo–macro approach, the peer relationship is most directly located at the:",
+    options: [
+      "Micro level",
+      "Mezzo level",
+      "Macro level",
+      "Biological level"
+    ],
+    answer: 1,
+    explanation: "朋友及同儕關係屬直接人際環境，在課堂分類中為 mezzo。"
+  },
+
+  {
+    tag: "⭐ Core — Macro",
+    q: "A government introduces an eligibility rule that restricts access to public assistance for a group of residents. The rule is most directly a:",
+    options: [
+      "Micro-level factor",
+      "Mezzo-level factor",
+      "Macro-level factor",
+      "Personality characteristic"
+    ],
+    answer: 2,
+    explanation: "政府政策及制度規則屬較廣泛的結構環境，即 macro。"
+  },
+
+  {
+    tag: "⭐ Core — Iceberg model",
+    q: "A social worker describes a client's visible behaviour as 'the tip of the iceberg.' Which assessment is most consistent with that metaphor?",
+    options: [
+      "Treating visible behaviour as the entire problem",
+      "Exploring relationships, structural conditions and experiences over time",
+      "Assuming hidden causes without asking the client",
+      "Ignoring the client's present difficulties"
+    ],
+    answer: 1,
+    explanation: "冰山比喻提醒我們：可見行為以外，也要探索關係、結構及時間因素。"
+  },
+
+  {
+    tag: "⭐ Core — Multiple levels",
+    q: "A student has been absent from school. The worker learns that the student feels exhausted, has conflict at home, and faces a transport system that makes the journey difficult. Which interpretation is most appropriate?",
+    options: [
+      "The absences must have one individual cause",
+      "Individual and environmental factors may interact",
+      "Transport difficulties are necessarily the only cause",
+      "Family relationships are irrelevant to attendance"
+    ],
+    answer: 1,
+    explanation: "個人狀態、家庭及交通環境可能互相作用，不能立即斷定單一原因。"
+  },
+
+  {
+    tag: "⭐ Core — Workplace",
+    q: "A client experiences repeated conflict with a supervisor. In analysing the client's immediate workplace relationship, the worker is primarily examining:",
+    options: [
+      "Mezzo-level interpersonal context",
+      "Macro-level legislation",
+      "A biological characteristic",
+      "The client's age alone"
+    ],
+    answer: 0,
+    explanation: "題目強調與上司的直接互動，在課堂的 micro–mezzo–macro 框架下屬 mezzo。"
+  },
+
+  {
+    tag: "⭐ Core — Multiple levels",
+    q: "A social worker examines how a client's disability, family support and inaccessible public facilities jointly affect daily life. Which statement best reflects the micro–mezzo–macro approach?",
+    options: [
+      "Only the disability should be considered",
+      "The family is the only relevant system",
+      "Individual, interpersonal and structural factors may all matter",
+      "Accessibility is unrelated to the environment"
+    ],
+    answer: 2,
+    explanation: "個人、家庭和公共設施分別提示不同層次，都可能影響參與。"
+  },
+
+  {
+    tag: "⭐ Core — Assessment",
+    q: "A practitioner explains a young person's behaviour entirely by saying, 'That is just their personality,' without exploring school or family circumstances. What is the main limitation?",
+    options: [
+      "It gives too much attention to structural conditions",
+      "It overlooks potentially relevant environmental influences",
+      "It considers too many systems",
+      "It proves that discrimination has occurred"
+    ],
+    answer: 1,
+    explanation: "只用性格解釋，可能忽略家庭、學校及其他環境影響。"
+  },
+
+  {
+    tag: "⭐ Core — Time",
+    q: "A social worker asks how a client's housing difficulties developed over several years, rather than examining only the current situation. Which aspect of the Lecture 10 iceberg model is being applied?",
+    options: [
+      "Focusing exclusively on what is visible now",
+      "Considering what has happened over time",
+      "Classifying the client's attachment pattern",
+      "Assuming the past determines the future"
+    ],
+    answer: 1,
+    explanation: "不只看現在，也考慮事情如何隨時間發展；但不代表過去必然決定未來。"
+  },
+
+  {
+    tag: "⭐ Core — Social identity",
+    q: "A person can be a parent, a migrant, a university student and a member of a religious community at the same time. Which idea does this best illustrate?",
+    options: [
+      "Everyone has exactly one social identity",
+      "Social identities can be multiple",
+      "Identities never affect social interactions",
+      "All identities have the same social meaning everywhere"
+    ],
+    answer: 1,
+    explanation: "一個人可以同時擁有多個社會身分，而不同情境可能令某些身分更受重視。"
+  },
+
+  {
+    tag: "⭐ Core — Perceived identity",
+    q: "An applicant is assumed to be unfamiliar with local culture because of their name, even though they have lived locally all their life. Which feature of social identity is most directly illustrated?",
+    options: [
+      "Social identity can involve how a person is perceived by others",
+      "Social identity depends only on private preferences",
+      "Perceptions never affect opportunities",
+      "The applicant has only one possible identity"
+    ],
+    answer: 0,
+    explanation: "社會身分也涉及他人如何看待或分類一個人，即使他們的判斷不準確。"
+  },
+
+  {
+    tag: "⭐ Core — Privilege",
+    q: "Members of one group rarely need to consider whether buildings will be physically accessible to them. This absence of a barrier is most relevant to:",
+    options: [
+      "Privilege",
+      "Inferiority",
+      "Identity diffusion",
+      "Social referencing"
+    ],
+    answer: 0,
+    explanation: "Privilege 不一定是特別獎賞，也可以表現為不必面對某些障礙。"
+  },
+
+  {
+    tag: "⭐ Core — Privilege",
+    q: "Which statement best describes privilege in the course context?",
+    options: [
+      "Every advantage is always earned solely through personal effort",
+      "Some advantages are linked to social identities valued by dominant norms",
+      "A privileged person cannot experience hardship",
+      "Privilege is always consciously requested"
+    ],
+    answer: 1,
+    explanation: "課堂關注與社會身分和主流規範相關、並非單靠個人努力取得的優勢。"
+  },
+
+  {
+    tag: "⭐ Core — Privilege and hardship",
+    q: "A professional says, 'I have had serious financial difficulties, so I cannot have any form of privilege.' Which response is most appropriate?",
+    options: [
+      "Privilege means having no difficulties at all",
+      "Financial status is the only social identity",
+      "A person can experience disadvantage in one area and privilege in another",
+      "Privilege and disadvantage always cancel each other out exactly"
+    ],
+    answer: 2,
+    explanation: "個人在一方面可能有困難，另一方面仍可能擁有某種 privilege。"
+  },
+
+  {
+    tag: "⭐ Core — Prejudice",
+    q: "A person feels uneasy around members of a social group because of negative feelings toward that group. No action is described. Which term best identifies the element highlighted in the lecture?",
+    options: [
+      "Prejudice",
+      "Discrimination",
+      "Government policy",
+      "Compensation"
+    ],
+    answer: 0,
+    explanation: "題目突出負面感受或態度，對應 prejudice。"
+  },
+
+  {
+    tag: "⭐ Core — Stereotype",
+    q: "A manager believes that older applicants cannot learn new technology, without assessing them individually. This belief is most directly an example of:",
+    options: [
+      "A stereotype",
+      "A completed discriminatory action",
+      "A secure base",
+      "A developmental virtue"
+    ],
+    answer: 0,
+    explanation: "對群體能力作概括性假設，是 stereotype。題目只描述想法，未描述拒絕聘用等行動。"
+  },
+
+  {
+    tag: "⭐ Core — Discrimination",
+    q: "A landlord refuses to rent a flat to an applicant specifically because of the applicant's ethnicity. The refusal is most directly an example of:",
+    options: [
+      "A stereotype only",
+      "Discrimination",
+      "Social referencing",
+      "Optimization"
+    ],
+    answer: 1,
+    explanation: "因族裔拒絕出租是具體的不公平行動，即 discrimination。"
+  },
+
+  {
+    tag: "⭐ Core — Key distinctions",
+    q: "A lecturer asks students to distinguish thoughts, feelings and actions. Which combination best follows LT3's simplified distinction?",
+    options: [
+      "Stereotype: action; prejudice: law; discrimination: thought",
+      "Stereotype: belief; prejudice: negative attitude; discrimination: unfair action",
+      "Stereotype: policy only; prejudice: action only; discrimination: emotion only",
+      "All three terms mean exactly the same thing"
+    ],
+    answer: 1,
+    explanation: "可先用課堂簡化區分：stereotype 是想法；prejudice 是態度或感受；discrimination 是行動。"
+  },
+
+  {
+    tag: "⭐ Core — Belief and action",
+    q: "A hiring panel believes that a minority group is less capable. It then refuses to interview qualified applicants from that group. Which sequence best describes the case?",
+    options: [
+      "Stereotype followed by discrimination",
+      "Discrimination followed by a biological change",
+      "Privilege followed by secure attachment",
+      "Identity exploration followed by commitment"
+    ],
+    answer: 0,
+    explanation: "「某群體能力較低」是 stereotype；拒絕給合資格者面試機會是 discrimination。"
+  },
+
+  {
+    tag: "⭐ Core — Institutional discrimination",
+    q: "Which situation most clearly illustrates institutional discrimination, rather than only an individual negative attitude?",
+    options: [
+      "A person privately feels nervous when meeting a stranger",
+      "An organisation consistently uses a rule that unfairly excludes a particular group from services",
+      "A student forgets a classmate's name once",
+      "A client prefers morning appointments"
+    ],
+    answer: 1,
+    explanation: "組織規則持續造成群體性的不公平排除，反映制度層面的歧視。"
+  },
+
+  {
+    tag: "⭐ Core — Oppression",
+    q: "A social worker analyses how repeated exclusion from employment, housing and services is reinforced by laws, organisational practices and social beliefs. Which concept best captures the broader pattern?",
+    options: [
+      "Oppression",
+      "Infantile amnesia",
+      "Initiative",
+      "Synaptic pruning"
+    ],
+    answer: 0,
+    explanation: "多個領域中反覆出現、並由制度及信念強化的從屬與排除，符合 oppression。"
+  },
+
+  {
+    tag: "⭐ Core — Discrimination vs oppression",
+    q: "Which statement best distinguishes discrimination from oppression?",
+    options: [
+      "Discrimination can involve unfair treatment; oppression highlights broader, sustained systems of power and subordination",
+      "Discrimination only happens in families, while oppression only happens in schools",
+      "Oppression can never be connected to institutions",
+      "Every isolated disagreement automatically proves systemic oppression"
+    ],
+    answer: 0,
+    explanation: "Discrimination 可指不公平待遇；oppression 更強調持續性的權力、制度及群體從屬關係。"
+  },
+
+  {
+    tag: "⭐ Core — Policy impact",
+    q: "A manager says, 'Our policy treats everyone identically, so it cannot create inequality.' A worker notices a recurring barrier for a particular group. What is the most useful next step?",
+    options: [
+      "Assume the manager intended harm",
+      "Examine how the policy operates and affects different groups in practice",
+      "Ignore the outcome because the written rule is identical",
+      "Conclude that no institutional factor can be relevant"
+    ],
+    answer: 1,
+    explanation: "規則形式上一致，不代表實際影響一定公平；先調查運作及結果，不能直接推定意圖。"
+  },
+
+  {
+    tag: "⭐ Core — Language privilege",
+    q: "A social worker notices that service users who speak the dominant local language can access information more easily than users who do not. What is the most appropriate interpretation?",
+    options: [
+      "The difference may reflect language-related privilege and a service-access barrier",
+      "Language access can never affect opportunity",
+      "Every dominant-language speaker is intentionally discriminatory",
+      "Users who face barriers necessarily lack motivation"
+    ],
+    answer: 0,
+    explanation: "主流語言使用者較易獲取資訊，可能涉及語言優勢；其他使用者可能面對服務障礙。"
+  },
+
+  {
+    tag: "⭐ Core — Coin model",
+    q: "In the coin model, privilege and oppression are presented as:",
+    options: [
+      "Completely unrelated experiences",
+      "Two sides of a system of unequal social relations",
+      "Two temporary emotions experienced by one person",
+      "Identical to academic performance"
+    ],
+    answer: 1,
+    explanation: "Coin model 用同一枚硬幣的兩面，理解互相關聯的 privilege 和 oppression。"
+  },
+
+  {
+    tag: "⭐ Core — Coin model",
+    q: "A social worker considers how one group's easier access to opportunities is connected to barriers faced by another group. Which model is most directly relevant?",
+    options: [
+      "Coin model",
+      "Strange Situation",
+      "Triangular theory of love",
+      "Synaptic pruning model"
+    ],
+    answer: 0,
+    explanation: "把一方優勢與另一方障礙放進同一制度關係中，對應 coin model。"
+  },
+
+  {
+    tag: "⭐ Core — Intersecting coins",
+    q: "A wheelchair user faces inaccessible transport but also has economic resources that make private transport possible. Which interpretation best reflects intersecting privilege and disadvantage?",
+    options: [
+      "The person is disadvantaged in every dimension",
+      "The person has advantages and barriers that must be understood in context",
+      "Financial resources erase all disability-related barriers",
+      "Disability determines every aspect of the person's life"
+    ],
+    answer: 1,
+    explanation: "經濟資源可能提供優勢，但不代表無障礙設施問題不存在。"
+  },
+
+  {
+    tag: "⭐ Core — Intersectionality",
+    q: "Which statement is most consistent with intersectionality as presented in Lecture 10?",
+    options: [
+      "Social identities operate separately and never interact",
+      "Multiple identities and structural conditions can jointly shape experience",
+      "Only one identity matters in every situation",
+      "Inequality is always caused by individual personality"
+    ],
+    answer: 1,
+    explanation: "Intersectionality 強調多重身分與結構條件如何共同塑造經驗。"
+  },
+
+  {
+    tag: "⭐ Core — Intersectional assessment",
+    q: "A woman from an ethnic minority describes a hiring experience that she believes is shaped by assumptions about both ethnicity and gender. An intersectional assessment would first:",
+    options: [
+      "Force the experience into either ethnicity or gender alone",
+      "Explore how the two may interact with organisational practices and wider social structures",
+      "Assume her account proves the motive of every interviewer",
+      "Ignore the workplace context"
+    ],
+    answer: 1,
+    explanation: "同時探索族裔、性別與組織及社會結構；但仍需更多資料，不能直接斷定面試者動機。"
+  },
+
+  {
+    tag: "⭐ Core — Intersectionality",
+    q: "A researcher studies barriers faced by low-income migrant women, considering immigration rules, employment practices and gendered expectations together. What is the principal strength?",
+    options: [
+      "It recognises that identities and structural forces can intersect",
+      "It assumes all migrant women have identical experiences",
+      "It removes the need to listen to individuals",
+      "It treats poverty as a personality trait"
+    ],
+    answer: 0,
+    explanation: "把身分與移民規則、就業慣例及性別期待一起分析，符合交織性。"
+  },
+
+  {
+    tag: "⭐ Core — Intersectionality",
+    q: "A student says, 'Intersectionality simply means adding up how many disadvantaged identities someone has.' Which correction is best?",
+    options: [
+      "It also examines how identities and systems interact to produce particular experiences",
+      "It means everyone has the same experience",
+      "It excludes institutions and policies",
+      "It applies only to one identity at a time"
+    ],
+    answer: 0,
+    explanation: "Intersectionality 不是只把劣勢加起來；重點是不同身分與制度如何互相作用。"
+  },
+
+  {
+    tag: "⭐ Core — Multiple social positions",
+    q: "A client experiences an advantage because of professional status while facing exclusion because of disability. Which statement is most appropriate?",
+    options: [
+      "The advantage proves the exclusion cannot happen",
+      "The exclusion proves the person has no advantages of any kind",
+      "Different social positions can produce a complex pattern of advantage and disadvantage",
+      "Only professional status matters"
+    ],
+    answer: 2,
+    explanation: "同一人在不同社會位置上，可能同時有優勢與障礙。"
+  },
+
+  {
+    tag: "⭐ Core — Single-axis analysis",
+    q: "A policy is designed around the experiences of a dominant group and overlooks people whose identities cross several marginalised categories. Which concern is most directly illustrated?",
+    options: [
+      "Single-axis approaches may miss experiences at intersections",
+      "All policies necessarily benefit everyone equally",
+      "Social identities cannot influence access",
+      "Individuals should be assessed without considering institutions"
+    ],
+    answer: 0,
+    explanation: "只按單一身分設計或分析政策，可能忽略處於交叉位置者的經驗。"
+  },
+
+  {
+    tag: "⭐ Core — Reflexivity",
+    q: "A social worker wants to apply the coin model reflectively. Which action is most consistent with that aim?",
+    options: [
+      "Examining how the worker's own social position may shape interactions and access to power",
+      "Assuming professional status has no effect on relationships",
+      "Treating privilege as proof that a person has never worked hard",
+      "Avoiding discussion of institutional barriers"
+    ],
+    answer: 0,
+    explanation: "反思自身身分及權力位置，有助理解與服務使用者的關係。"
+  },
+
+  {
+    tag: "⭐ Core — Bronfenbrenner: micro",
+    q: "A child regularly interacts with a caregiver at home and a teacher at school. In Bronfenbrenner's model, each direct setting is an example of a:",
+    options: [
+      "Microsystem",
+      "Exosystem",
+      "Macrosystem",
+      "Chronosystem"
+    ],
+    answer: 0,
+    explanation: "對孩子而言，家庭和學校各是直接參與的 microsystem。注意這與社工 micro–mezzo–macro 的用法不同。"
+  },
+
+  {
+    tag: "⭐ Core — Bronfenbrenner: meso",
+    q: "A parent and teacher communicate regularly to coordinate support for a child. The connection between home and school is most directly an example of the:",
+    options: [
+      "Microsystem",
+      "Mesosystem",
+      "Exosystem",
+      "Macrosystem"
+    ],
+    answer: 1,
+    explanation: "家庭與學校之間的連結，是 Bronfenbrenner 的 mesosystem。"
+  },
+
+  {
+    tag: "⭐ Core — Bronfenbrenner: exo",
+    q: "A parent's employer changes work schedules. The child never visits the workplace, but the change reduces the time the parent can spend at home. For the child, the parent's workplace is most directly an example of the:",
+    options: [
+      "Microsystem",
+      "Mesosystem",
+      "Exosystem",
+      "Individual system"
+    ],
+    answer: 2,
+    explanation: "孩子不直接參與的家長工作場所，卻間接影響孩子，屬 exosystem。"
+  },
+
+  {
+    tag: "⭐ Core — Bronfenbrenner: macro",
+    q: "A social worker considers how broad cultural values about gender influence expectations within families and schools. In Bronfenbrenner's model, the broad cultural values are most directly part of the:",
+    options: [
+      "Microsystem",
+      "Mesosystem",
+      "Exosystem",
+      "Macrosystem"
+    ],
+    answer: 3,
+    explanation: "廣泛文化價值及社會規範屬 macrosystem。"
+  },
+
+  {
+    tag: "⭐ Core — Bronfenbrenner: chrono",
+    q: "A practitioner examines how a family's experiences have changed across a major social transition and several years of relocation. Which ecological concept directs attention most explicitly to time and change?",
+    options: [
+      "Microsystem",
+      "Chronosystem",
+      "Secure base",
+      "Stereotype"
+    ],
+    answer: 1,
+    explanation: "Chronosystem 把時間、生命轉變及歷史變化納入分析。"
+  },
+
+  {
+    tag: "📘 Supplementary — Person in environment",
+    q: "A client says an inaccessible workplace has limited participation. A worker explores the barrier, the client's strengths and preferred changes. Which response best reflects a person-in-environment perspective?",
+    options: [
+      "Focus only on changing the client's attitude",
+      "Consider both the person and the environment in assessment",
+      "Assume the workplace is irrelevant",
+      "Treat the client's goals as unimportant"
+    ],
+    answer: 1,
+    explanation: "PiE 不只要求個人改變，也要看環境障礙、個人資源及其目標。"
+  },
+
+  {
+    tag: "📘 Supplementary — Micro practice",
+    q: "A social worker provides individual counselling to help a client manage a difficult life transition. In LT3's three types of social work practice, this is primarily:",
+    options: [
+      "Micro-level practice",
+      "Mezzo-level practice",
+      "Macro-level practice",
+      "Chronosystem practice"
+    ],
+    answer: 0,
+    explanation: "直接與個人進行輔導，在 LT3 的實踐分類中屬 micro。"
+  },
+
+  {
+    tag: "📘 Supplementary — Mezzo practice",
+    q: "A practitioner facilitates a support group for caregivers who share concerns and develop strategies together. This is primarily an example of:",
+    options: [
+      "Micro-level practice",
+      "Mezzo-level practice",
+      "Macro-level practice",
+      "Biological assessment only"
+    ],
+    answer: 1,
+    explanation: "帶領支援小組屬群組層面的 mezzo practice。"
+  },
+
+  {
+    tag: "📘 Supplementary — Macro practice",
+    q: "A coalition of social workers and community members campaigns to change an exclusionary housing policy. This is primarily:",
+    options: [
+      "Micro-level practice",
+      "Mezzo-level practice",
+      "Macro-level practice",
+      "A personality assessment"
+    ],
+    answer: 2,
+    explanation: "倡議政策改變屬較大規模的 macro practice。"
+  },
+
+  {
+    tag: "📘 Supplementary — Assessment",
+    q: "A student is falling asleep in class. The school social worker has not yet spoken to the student or family. Which first conclusion is most appropriate?",
+    options: [
+      "The student is definitely lazy",
+      "The behaviour warrants further assessment, including the student's account and relevant context",
+      "The family must be responsible",
+      "School policy is certainly the only cause"
+    ],
+    answer: 1,
+    explanation: "課堂表現是線索，不是原因；要先聽學生及了解環境，避免標籤。"
+  },
+
+  {
+    tag: "📘 Supplementary — Family and economy",
+    q: "A student's parent has lost a job. The student worries about household expenses and has less time for homework because of additional family responsibilities. Which assessment best reflects LT3's approach?",
+    options: [
+      "Consider only the student's study habits",
+      "Explore how economic change, family circumstances and the student's experience interact",
+      "Assume all students in similar families respond identically",
+      "Diagnose a disorder from the information given"
+    ],
+    answer: 1,
+    explanation: "家庭經濟、責任及學生感受可能互相影響，需要整體探索。"
+  },
+
+  {
+    tag: "📘 Supplementary — Evidence",
+    q: "An applicant is rejected for a position. The applicant belongs to a minority group, but no information is available about the selection process or reasons for rejection. What is the most defensible conclusion?",
+    options: [
+      "The rejection definitively proves discrimination",
+      "Discrimination is impossible",
+      "More information is needed to assess whether unfair treatment occurred",
+      "The applicant's identity has no possible relevance"
+    ],
+    answer: 2,
+    explanation: "身分可能相關，但單憑被拒絕不足以證明或排除歧視，需要更多資料。"
+  },
+
+  {
+    tag: "📘 Supplementary — Service access",
+    q: "A service's information is available only in one language. Several clients report difficulty understanding how to apply. Which response most directly addresses the identified barrier?",
+    options: [
+      "Provide accessible information in relevant languages and review the application process",
+      "Tell clients the problem is entirely their responsibility",
+      "Stop asking clients about access",
+      "Assume every client has the same language needs"
+    ],
+    answer: 0,
+    explanation: "題目已指出語言障礙；改善資訊及申請流程直接回應問題。"
+  },
+
+  {
+    tag: "📘 Supplementary — Professional power",
+    q: "A social worker has authority to recommend services for a client. The worker reflects on how this authority may affect the client's willingness to disagree. What is the strongest reason for this reflection?",
+    options: [
+      "Professional relationships can involve differences in power",
+      "Clients and workers can never have different perspectives",
+      "Professional authority removes the need for discussion",
+      "Power exists only in government"
+    ],
+    answer: 0,
+    explanation: "社工的專業角色可能帶來權力差異，影響服務使用者表達意見。"
+  },
+
+  {
+    tag: "📘 Supplementary — Strengths and barriers",
+    q: "A social worker learns that a client faces barriers related to disability and income. The client also has strong peer support and clear personal goals. Which formulation is most balanced?",
+    options: [
+      "Describe only the client's difficulties",
+      "Recognise barriers and strengths while exploring the client's priorities",
+      "Assume peer support eliminates every structural barrier",
+      "Decide the client's goals without consultation"
+    ],
+    answer: 1,
+    explanation: "平衡評估同時看結構障礙、個人及社會資源，並尊重當事人目標。"
+  }
+
+];
+
+const storageKey = "ss5212-lt3-lecture10-quiz-v1";
+const quiz = document.getElementById("quiz");
+const result = document.getElementById("result");
+const progress = document.getElementById("progress");
+
+let savedAnswers = {};
+
+try {
+  const saved = localStorage.getItem(storageKey);
+  if (saved) {
+    savedAnswers = JSON.parse(saved);
+  }
+} catch (error) {
+  savedAnswers = {};
+}
+
+function saveAnswers() {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(savedAnswers));
+  } catch (error) {
+    // The quiz still works even when browser storage is unavailable.
+  }
+}
+
+function updateProgress() {
+  let count = 0;
+
+  questions.forEach((item, index) => {
+    if (savedAnswers[index] !== undefined) {
+      count++;
+    }
+  });
+
+  progress.textContent =
+    `Answered: ${count} / ${questions.length}`;
+}
+
+function renderQuiz() {
+  quiz.innerHTML = "";
+
+  questions.forEach((item, index) => {
+    const section = document.createElement("section");
+    section.className = "question";
+
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = item.tag;
+    section.appendChild(tag);
+
+    const heading = document.createElement("h2");
+    heading.textContent = `Question ${index + 1}. ${item.q}`;
+    section.appendChild(heading);
+
+    item.options.forEach((option, optionIndex) => {
+      const label = document.createElement("label");
+      const radio = document.createElement("input");
+
+      radio.type = "radio";
+      radio.name = `question-${index}`;
+      radio.value = optionIndex;
+
+      if (Number(savedAnswers[index]) === optionIndex &&
+          savedAnswers[index] !== undefined) {
+        radio.checked = true;
+      }
+
+      radio.addEventListener("change", () => {
+        savedAnswers[index] = optionIndex;
+        saveAnswers();
+        updateProgress();
+      });
+
+      const letter = String.fromCharCode(65 + optionIndex);
+
+      label.appendChild(radio);
+      label.appendChild(
+        document.createTextNode(`${letter}. ${option}`)
+      );
+
+      section.appendChild(label);
+    });
+
+    const feedback = document.createElement("div");
+    feedback.className = "feedback";
+    feedback.id = `feedback-${index}`;
+    section.appendChild(feedback);
+
+    quiz.appendChild(section);
+  });
+
+  updateProgress();
+}
+
+function submitQuiz() {
+  let score = 0;
+  let unanswered = 0;
+
+  questions.forEach((item, index) => {
+    const selected = document.querySelector(
+      `input[name="question-${index}"]:checked`
+    );
+
+    const feedback = document.getElementById(
+      `feedback-${index}`
+    );
+
+    const correctLetter = String.fromCharCode(
+      65 + item.answer
+    );
+
+    let status = "";
+
+    if (!selected) {
+      unanswered++;
+      status = '<span class="incorrect">未作答</span>';
+    } else if (Number(selected.value) === item.answer) {
+      score++;
+      status = '<span class="correct">✓ 答對了</span>';
+    } else {
+      status = '<span class="incorrect">✗ 答錯了</span>';
+    }
+
+    feedback.innerHTML =
+      `${status}<br>` +
+      `<strong>Correct answer: ${correctLetter}. ` +
+      `${item.options[item.answer]}</strong><br>` +
+      `${item.explanation}`;
+
+    feedback.style.display = "block";
+  });
+
+  const percentage = Math.round(
+    (score / questions.length) * 100
+  );
+
+  result.innerHTML =
+    `<h2>Your result: ${score} / ${questions.length}</h2>` +
+    `<p><strong>Score: ${percentage}%</strong></p>` +
+    `<p>Unanswered: ${unanswered}</p>` +
+    `<p>Scroll down to review the answers and Chinese explanations.</p>`;
+
+  result.style.display = "block";
+  result.scrollIntoView({ behavior: "smooth" });
+}
+
+function resetQuiz() {
+  const confirmed = confirm(
+    "Reset all answers? Your saved selections will be cleared."
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  savedAnswers = {};
+
+  try {
+    localStorage.removeItem(storageKey);
+  } catch (error) {
+    // Continue resetting the visible page.
+  }
+
+  result.style.display = "none";
+  result.innerHTML = "";
+
+  renderQuiz();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+document
+  .getElementById("submitButton")
+  .addEventListener("click", submitQuiz);
+
+document
+  .getElementById("resetButton")
+  .addEventListener("click", resetQuiz);
+
+renderQuiz();
+</script>
+
+</body>
+</html>
